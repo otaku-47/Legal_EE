@@ -1,0 +1,2 @@
+Demo/modelInfo/model_weights.h5 filter=lfs diff=lfs merge=lfs -text
+Demo/venv/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd filter=lfs diff=lfs merge=lfs -text
