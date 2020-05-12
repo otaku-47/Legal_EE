@@ -98,7 +98,7 @@
             <div class="col-lg-12">
               <form role="form">
                 <div class="form-group">
-                  <textarea id="input_text" class="form-control" rows="7" style="min-width: 100%">2014年12月的一天，被告人张某趁鲍某试衣服时，将鲍某包中该银行卡盗走。12月30日9时许，被告人张某持卡到ATM机上盗取现金2300元。后被告人张某到派出所主动投案。</textarea>
+                  <textarea id="input_text" class="form-control" rows="7" style="min-width: 100%">2014年12月的一天，被告人张某趁鲍某试衣服时，将鲍某包中一张银行卡盗走。12月30日9时许，被告人张某持卡到ATM机上取得现金2300元。次日，张某到友谊商场消费1000元。后被告人张某到派出所主动投案。</textarea>
                     <div id="note" class="note">
                       <span style="color: #777; "> * 在这里输入一段案情描述</span>
                     </div>
@@ -404,6 +404,7 @@
                             content.className = 'content';
                             content.setAttribute('style', 'padding: 1rem;');
                             let j;
+                            let tp = 0;
                             for (j = 0; j < event[i][3].length; j++) {
                                 let item = document.createElement("span");
                                 let el = event[i][4][j];
@@ -432,11 +433,39 @@
                                 }
                                 else {
                                     item.className = "badge badge-warning";
+                                    if (event[i][3][j] === "Steal") {
+                                        tp = 1;
+                                    }
+                                    else if (event[i][3][j] === "Draw") {
+                                        tp = 2;
+                                    }
+                                    else if (event[i][3][j] === "Consume") {
+                                        tp = 3;
+                                    }
+                                    else if (event[i][3][j] === "Sale") {
+                                        tp = 4;
+                                    }
                                 }
                                 item.setAttribute('style', 'font-size: large; margin: 0.5rem');
                                 item.innerHTML = el;
                                 content.appendChild(item);
                             }
+                            let text = "事件类型：";
+                            if (tp === 1) {
+                                text += "盗窃";
+                            }
+                            else if (tp === 2) {
+                                text += "取款";
+                            }
+                            else if (tp === 3) {
+                                text += "耗用赃款";
+                            }
+                            else if (tp === 4) {
+                                text += "处理赃物";
+                            }
+                            let wb = document.createElement("span");
+                            wb.innerHTML = text;
+                            content.appendChild(wb);
                             li.appendChild(time);
                             li.appendChild(dot);
                             li.appendChild(content);
