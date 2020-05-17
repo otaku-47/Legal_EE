@@ -6,7 +6,7 @@ from flask import jsonify
 from kashgari import utils
 import re
 import functools
-from TimeRec.time_normalizer import TimeNormalizer
+from TimeFmt.parser import Parser
 import time
 import tensorflow as tf
 from tensorflow.python.keras.backend import set_session
@@ -227,7 +227,7 @@ def print_info(arg_type, arg_value):
                 continue
             if 'Time' in arg_type[i][j]:  # 处理时间
                 tmp_time = time_1
-                tn = TimeNormalizer()
+                tn = Parser()
                 res = None
                 if t_str != '':  # 不是第一个时间，将上一个时间作为基准时间
                     print(tmp_time)
