@@ -230,6 +230,7 @@
             </div>
           </div>
         </div>
+        <div class="row mt-3" id= "ctn"></div>
       </div>
     </section>
 <!-- Portfolio -->
@@ -379,6 +380,15 @@
                     contentType: 'application/json',
                     data: JSON.stringify({t:text}),
                     success: function(data) {
+                        function unique (arr) {
+                            return Array.from(new Set(arr));
+                        }
+                        let pes_list = [];
+                        let event_ctn = [];
+                        let event_person = [];
+                        let event_tp = [];
+
+                        // timeline
                         let ul = document.getElementById("tline");
                         let div_llii = document.getElementById("llii");
                         while (div_llii !== null) {
@@ -394,10 +404,12 @@
                         let volun = data['volun'];
                         let i;
                         for (i = 0; i < event.length; i++) {
+                            event_person.push([]);
                             let li = document.createElement("li");
                             let time = document.createElement("span");
                             time.className = 'time';
                             time.innerHTML = event[i][0];
+                            event_ctn.push(event[i][0])
                             let dot = document.createElement("span");
                             dot.className = 'dot bg-info';
                             let content = document.createElement("div");
@@ -408,11 +420,16 @@
                             for (j = 0; j < event[i][3].length; j++) {
                                 let item = document.createElement("span");
                                 let el = event[i][4][j];
+
                                 if (event[i][3][j].search("Person") !== -1) {
                                     item.className = "badge badge-primary";
+                                    pes_list.push(el);
+                                    event_person[i].push(el)
                                 }
                                 else if (event[i][3][j].search("Thief") !== -1) {
                                     item.className = "badge badge-primary";
+                                    pes_list.push(el);
+                                    event_person[i].push(el)
                                     el = el + "（犯罪嫌疑人）";
                                 }
                                 else if (event[i][3][j].search("Victim") !== -1) {
@@ -435,15 +452,19 @@
                                     item.className = "badge badge-warning";
                                     if (event[i][3][j] === "Steal") {
                                         tp = 1;
+                                        event_tp.push("盗窃");
                                     }
                                     else if (event[i][3][j] === "Draw") {
                                         tp = 2;
+                                        event_tp.push("取款");
                                     }
                                     else if (event[i][3][j] === "Consume") {
                                         tp = 3;
+                                        event_tp.push("耗用赃款");
                                     }
                                     else if (event[i][3][j] === "Sale") {
                                         tp = 4;
+                                        event_tp.push("处理赃物");
                                     }
                                 }
                                 item.setAttribute('style', 'font-size: large; margin: 0.5rem');
@@ -483,6 +504,67 @@
                         ti.setAttribute('style', 'width: auto; padding:1rem;');
                         ti.setAttribute('id', 'ttii');
                         ul.appendChild(ti);
+
+                        // 表格
+                        pes_list = unique(pes_list);
+                        let bctn = document.getElementById("ctn");
+                        let ctn = document.getElementById("table_inside");
+                        while (ctn !== null) {
+                            ctn.parentNode.removeChild(ctn);
+                            ctn = document.getElementById("table_inside");
+                        }
+                        let tb = document.createElement("table");
+                        tb.setAttribute("class", "table table-bordered");
+                        // 标题
+                        let cpt = document.createElement("caption");
+                        cpt.innerHTML = "事件参与情况";
+                        tb.appendChild(cpt);
+                        // 表头
+                        let thd = document.createElement("thead");
+                        let tr = document.createElement("tr");
+                        let th = document.createElement("th");
+                        th.innerHTML = "姓名";
+                        tr.appendChild(th);
+                        for (i = 0; i < event_ctn.length; i++) {
+                            let th = document.createElement("th");
+                            th.innerHTML = event_ctn[i] + " " + event_tp[i];
+                            tr.appendChild(th);
+                        }
+                        thd.appendChild(tr);
+                        tb.appendChild(thd);
+                        // 内容
+                        let tbd = document.createElement("tbody");
+                        for (i = 0; i < pes_list.length; i++) {
+                            let tr = document.createElement("tr");
+                            let td = document.createElement("td");
+                            td.innerHTML = pes_list[i];
+                            tr.appendChild(td);
+                            let j;
+                            for (j = 0; j < event_ctn.length; j++) {
+                                let idx = event_person[j].indexOf(pes_list[i]);
+                                if (idx !== -1) {
+                                    let td = document.createElement("td");
+                                    //let s = document.createElement("span");
+                                    //s.setAttribute("class", "glyphicon glyphicon-circle-selected");
+                                    td.innerHTML = "参与";
+                                    tr.appendChild(td);
+                                }
+                                else {
+                                    let td = document.createElement("td");
+                                    //let s = document.createElement("span");
+                                    //s.setAttribute("class", "glyphicon glyphicon-circle-empty");
+                                    td.innerHTML = "/";
+                                    tr.appendChild(td);
+                                }
+                            }
+                            tbd.appendChild(tr);
+                        }
+                        tb.appendChild(tbd);
+                        let d = document.createElement("div");
+                        d.setAttribute("class", "col-lg-12")
+                        d.setAttribute("id", "table_inside");
+                        d.appendChild(tb);
+                        bctn.appendChild(d);
                     }
                 })
             })
