@@ -402,6 +402,7 @@
                         }
                         let event = data['event'];
                         let volun = data['volun'];
+                        let vl = data['vl']
                         let i;
                         for (i = 0; i < event.length; i++) {
                             event_person.push([]);
@@ -496,7 +497,17 @@
                         let ti = document.createElement("li");
                         ti.className = 'title';
                         if (volun === true) {
-                            ti.innerHTML = "是否自首：是";
+                            let tmp_str = "是否自首：是（";
+                            for (i = 0; i < vl.length; i++) {
+                                if (i === 0) {
+                                    tmp_str = tmp_str + vl[i];
+                                }
+                                else {
+                                    tmp_str = tmp_str + "，" + vl[i];
+                                }
+                            }
+                            tmp_str = tmp_str + "）";
+                            ti.innerHTML = tmp_str;
                         }
                         else {
                             ti.innerHTML = "是否自首：否";
@@ -530,6 +541,11 @@
                             th.innerHTML = event_ctn[i] + " " + event_tp[i];
                             tr.appendChild(th);
                         }
+                        if (volun === true) {
+                            let th = document.createElement("th");
+                            th.innerHTML = "自首";
+                            tr.appendChild(th);
+                        }
                         thd.appendChild(tr);
                         tb.appendChild(thd);
                         // 内容
@@ -542,20 +558,29 @@
                             let j;
                             for (j = 0; j < event_ctn.length; j++) {
                                 let idx = event_person[j].indexOf(pes_list[i]);
+                                let td = document.createElement("td");
                                 if (idx !== -1) {
-                                    let td = document.createElement("td");
                                     //let s = document.createElement("span");
                                     //s.setAttribute("class", "glyphicon glyphicon-circle-selected");
                                     td.innerHTML = "参与";
-                                    tr.appendChild(td);
                                 }
                                 else {
-                                    let td = document.createElement("td");
                                     //let s = document.createElement("span");
                                     //s.setAttribute("class", "glyphicon glyphicon-circle-empty");
                                     td.innerHTML = "/";
-                                    tr.appendChild(td);
                                 }
+                                tr.appendChild(td);
+                            }
+                            if (volun === true) {
+                                let td = document.createElement("td");
+                                let idx = vl.indexOf(pes_list[i]);
+                                if (idx !== -1) {
+                                    td.innerHTML = "参与";
+                                }
+                                else {
+                                    td.innerHTML = "/";
+                                }
+                                tr.appendChild(td);
                             }
                             tbd.appendChild(tr);
                         }

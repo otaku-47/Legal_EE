@@ -207,6 +207,7 @@ def do_predict(text):
 def print_info(arg_type, arg_value):
     event_info = []
     is_volunteer = False
+    volun_list = []
     time_1 = ''
     time_2 = ''
     t_str = ''
@@ -224,7 +225,8 @@ def print_info(arg_type, arg_value):
         for j in range(len(arg_type[i])):
             if 'Volun' in arg_type[i][j]:
                 is_volunteer = True
-                continue
+                if 'Person' in arg_type[i][j]:
+                    volun_list.append(arg_value[i][j])
             if 'Time' in arg_type[i][j]:  # 处理时间
                 tmp_time = time_1
                 tn = Parser()
@@ -281,7 +283,7 @@ def print_info(arg_type, arg_value):
     sorted_event = sorted(event_info, key=functools.cmp_to_key(my_event_cmp))
     for k in range(len(sorted_event)):
         sorted_event[k] = sorted_event[k].to_list()
-    return sorted_event, is_volunteer
+    return sorted_event, is_volunteer, volun_list
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -296,8 +298,8 @@ def btn_start():
         t = a['t']
         print(t)
         arg_type, arg_value = do_predict(t)
-        event, volun = print_info(arg_type, arg_value)
-        return jsonify({'event': event, 'volun': volun})
+        event, volun, vl = print_info(arg_type, arg_value)
+        return jsonify({'event': event, 'volun': volun, 'vl': vl})
     return jsonify('fail')
 
 
