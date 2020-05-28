@@ -10,6 +10,7 @@ from TimeFmt.parser import Parser
 import time
 import tensorflow as tf
 from tensorflow.python.keras.backend import set_session
+from crf_model import CRFModel
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -20,8 +21,11 @@ test_text_2 = '2015年6月22日凌晨，被告人鞠某通过攀爬楼体的方�
 sess = tf.Session()
 graph = tf.get_default_graph()
 set_session(sess)
-loaded_model = utils.load_model('modelInfo')
+loaded_model = utils.load_model('modelInfo/p1/input/p1')
 event_list = ['B-Steal', 'B-Draw', 'B-Consume', 'B-Sale', 'B-Volunteer']
+
+
+cm = CRFModel(model='crf/model')
 
 
 # 自定义事件类
@@ -101,7 +105,10 @@ def do_predict(text):
     x = split_char(text)
     with graph.as_default():
         set_session(sess)
-        y = loaded_model.predict(x)
+        t_y = loaded_model.predict(x)
+        print(t_y)
+    y = cm.predict(data=t_y)
+    print(y)
     for i in range(len(x)):
         tmp_y = y[i]
         tmp_event_list, tmp_trigger_idx = is_event_sent(tmp_y)
@@ -171,7 +178,7 @@ def do_predict(text):
                                 dis.append(None)
                             min_dis = 999
                             min_idx = 0
-                            if 'Time' in b:  # 时间元素必须在触发词之前
+                            if 'Time' in b or 'Victim' in b or 'Person' in b:  # 时间，Victim必须在触发词之前
                                 for k in range(len(tmp_event_list)):
                                     if tmp_event_list[k] in tmp_type:
                                         dis[k] = now - tmp_trigger_idx[k]
