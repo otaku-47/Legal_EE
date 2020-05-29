@@ -360,6 +360,14 @@ class TimeNormalizer:
         if c_day(pattern, 1):
             flag3 = True
 
+        pattern = re.compile(r"\d+(?=日[以之]?前)")
+        if c_day(pattern, -1):
+            flag3 = True
+
+        pattern = re.compile(r"\d+(?=日[以之]?后)")
+        if c_day(pattern, 1):
+            flag3 = True
+
         pattern = re.compile(r"\d+(?=(个)?星期[以之]?前)")
         if c_day(pattern, -7):
             flag3 = True
